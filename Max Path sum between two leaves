@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int ans;
+    int solve(Node* root) {
+        if (root == NULL)
+            return INT_MIN;
+        if (root->left == NULL && root->right == NULL)
+            return root->data;
+        int left = solve(root->left);
+        int right = solve(root->right);
+        if (left != INT_MIN && right != INT_MIN) {
+            ans = max(ans, left + root->data + right);
+        }
+        if (right == INT_MIN)
+            return left + root->data;
+        if (left == INT_MIN)
+            return right + root->data;
+        return root->data + max(left, right);
+    }
+    int maxPathSum(Node* root) {
+        if (root == NULL)
+            return -1;
+        ans = INT_MIN;
+        solve(root);
+        if (ans == INT_MIN)
+            return -1;
+        return ans;
+    }
+};
