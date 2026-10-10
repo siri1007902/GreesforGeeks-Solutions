@@ -1,0 +1,22 @@
+class Solution {
+  public:
+    bool balancePan(int a, int b) {
+        while (b > 0) {
+            int r = b % a;
+
+            if (r == 1) {
+                b--;
+            } 
+            else if (r == a - 1) {
+                b++;
+            } 
+            else if (r != 0) {
+                return false;
+            }
+
+            b /= a;
+        }
+
+        return true;
+    }
+};
