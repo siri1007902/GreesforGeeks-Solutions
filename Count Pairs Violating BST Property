@@ -1,0 +1,53 @@
+class Solution {
+public:
+    long long ans = 0;
+
+    long long mergeCount(vector<int>& a, int l, int m, int r) {
+        vector<int> temp;
+        int i = l, j = m + 1;
+        long long cnt = 0;
+
+        while (i <= m && j <= r) {
+            if (a[i] < a[j]) {
+                temp.push_back(a[i++]);
+            } else {
+                cnt += m - i + 1;
+                temp.push_back(a[j++]);
+            }
+        }
+
+        while (i <= m) temp.push_back(a[i++]);
+        while (j <= r) temp.push_back(a[j++]);
+
+        for (int k = 0; k < (int)temp.size(); k++)
+            a[l + k] = temp[k];
+
+        return cnt;
+    }
+
+    long long countInversions(vector<int>& a, int l, int r) {
+        if (l >= r) return 0;
+
+        int m = l + (r - l) / 2;
+
+        long long cnt = countInversions(a, l, m);
+        cnt += countInversions(a, m + 1, r);
+        cnt += mergeCount(a, l, m, r);
+
+        return cnt;
+    }
+
+    void inorder(Node* root, vector<int>& a) {
+        if (!root) return;
+        inorder(root->left, a);
+        a.push_back(root->data);
+        inorder(root->right, a);
+    }
+
+    long long pairsViolatingBST(Node* root) {
+        vector<int> a;
+        inorder(root, a);
+
+        return countInversions(a, 0, (int)a.size() - 1);
+    }
+};
