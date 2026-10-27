@@ -1,0 +1,15 @@
+class Solution:
+    def getMaxWeight(self, s):
+        n = len(s)
+        dp = [0] * (n + 1)
+
+        for i in range(n - 1, -1, -1):
+            # Leave the current character unpaired
+            dp[i] = 1 + dp[i + 1]
+
+            # Pair the current character with the next one
+            if i + 1 < n:
+                cost = 4 if s[i] != s[i + 1] else 3
+                dp[i] = max(dp[i], cost + dp[i + 2])
+
+        return dp[0]
