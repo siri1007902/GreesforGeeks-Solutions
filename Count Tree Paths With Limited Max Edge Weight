@@ -1,0 +1,59 @@
+class Solution {
+  public:
+    vector<int> maximumWeight(int n, vector<vector<int>> edges, vector<int>& queries) {
+
+        vector<int> parent(n + 1), sz(n + 1, 1);
+
+        for (int i = 1; i <= n; i++)
+            parent[i] = i;
+
+        function<int(int)> find = [&](int x) {
+            if (parent[x] != x)
+                parent[x] = find(parent[x]);
+            return parent[x];
+        };
+
+        sort(edges.begin(), edges.end(),
+             [](vector<int>& a, vector<int>& b) {
+                 return a[2] < b[2];
+             });
+
+        int q = queries.size();
+
+        vector<pair<int, int>> qr;
+
+        for (int i = 0; i < q; i++)
+            qr.push_back({queries[i], i});
+
+        sort(qr.begin(), qr.end());
+
+        vector<int> ans(q);
+        long long count = 0;
+        int j = 0;
+
+        for (auto [x, idx] : qr) {
+
+            while (j < edges.size() && edges[j][2] <= x) {
+
+                int u = find(edges[j][0]);
+                int v = find(edges[j][1]);
+
+                if (u != v) {
+                    count += 1LL * sz[u] * sz[v];
+
+                    if (sz[u] < sz[v])
+                        swap(u, v);
+
+                    parent[v] = u;
+                    sz[u] += sz[v];
+                }
+
+                j++;
+            }
+
+            ans[idx] = count;
+        }
+
+        return ans;
+    }
+};
