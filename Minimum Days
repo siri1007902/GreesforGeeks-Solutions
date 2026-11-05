@@ -1,0 +1,42 @@
+class Solution {
+public:
+    bool check(string s, vector<int>& p, int days) {
+        int n = s.size();
+
+        for (int i = 0; i < days; i++) {
+            s[p[i]] = '?';
+        }
+
+        for (int i = 0; i < n - 1; i++) {
+            if (s[i] != '?' && s[i + 1] != '?' &&
+                s[i] == s[i + 1]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    int getMinimumDays(string s, vector<int>& p) {
+        int n = s.size();
+
+        if (check(s, p, 0))
+            return 0;
+
+        int low = 1, high = n;
+        int ans = n;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            if (check(s, p, mid)) {
+                ans = mid;
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+
+        return ans;
+    }
+};
